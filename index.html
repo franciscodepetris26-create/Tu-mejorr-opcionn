@@ -4,14 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo de Productos</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .hidden { display: none; }
+    .card { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; width: 200px; vertical-align: top; }
+    .card img { width: 100%; height: auto; }
+    input { margin: 5px 0; width: 100%; padding: 5px; }
+    button { padding: 5px 10px; margin-top: 5px; cursor: pointer; }
+  </style>
+
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <!-- LOGIN ADMIN -->
+  <!-- Login admin -->
   <div id="login">
     <h2>Login Admin</h2>
     <input type="text" id="username" placeholder="Usuario">
@@ -19,22 +27,129 @@
     <button onclick="login()">Entrar</button>
   </div>
 
-  <!-- CATÁLOGO VISIBLE PARA TODOS -->
+  <!-- Todos pueden ver esto -->
   <h1>Catálogo de Productos</h1>
   <input type="text" id="search" placeholder="Buscar producto..." oninput="filtrarProductos()">
   <div id="productos"></div>
 
-  <!-- PANEL ADMIN -->
+  <!-- Panel admin -->
   <div id="adminPanel" class="hidden">
     <h2>Agregar Producto</h2>
-    <input type="text" id="nombre" placeholder="Nombre del producto">
+    <input type="text" id="nombre" placeholder="Nombre">
     <input type="text" id="precio" placeholder="Precio">
     <input type="text" id="descripcion" placeholder="Descripción">
-    <input type="text" id="foto" placeholder="URL de la imagen">
+    <input type="text" id="foto" placeholder="URL de Imagen">
     <button onclick="agregarProducto()">Agregar Producto</button>
   </div>
 
-  <!-- APP JS -->
-  <script src="app.js"></script>
+  <script>
+    // --------------------
+    // Configuración Firebase
+    // --------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyB8CdmsQ4GUqN1m_KlHlxGhagmed8_aVpA",
+      authDomain: "producto-a6e68.firebaseapp.com",
+      projectId: "producto-a6e68",
+      storageBucket: "producto-a6e68.appspot.com",
+      messagingSenderId: "358261871993",
+      appId: "1:358261871993:web:6aff27584ed1afd7d04ba8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // --------------------
+    // Admin
+    // --------------------
+    const USER = "Belen192226";
+    const PASS = "Fran192226";
+
+    function login() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      if(user === USER && pass === PASS) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("adminPanel").classList.remove("hidden");
+        mostrarProductos(true);
+      } else {
+        alert("Usuario o contraseña incorrectos");
+      }
+    }
+
+    // --------------------
+    // Mostrar productos
+    // --------------------
+    function mostrarProductos(isAdmin=false, filtro="") {
+      const contenedor = document.getElementById("productos");
+      db.collection("productos").onSnapshot((querySnapshot) => {
+        contenedor.innerHTML = "";
+        querySnapshot.forEach((doc) => {
+          const p = doc.data();
+          if(p.name.toLowerCase().includes(filtro.toLowerCase())) {
+            contenedor.innerHTML += `
+              <div class="card">
+                <img src="${p.photo}" alt="${p.name}">
+                <h3>${p.name}</h3>
+                <p>${p.description}</p>
+                <p><b>$${p.price}</b></p>
+                ${isAdmin ? `<button onclick="eliminarProducto('${doc.id}')">Eliminar</button>` : ""}
+              </div>
+            `;
+          }
+        });
+      });
+    }
+
+    // --------------------
+    // Agregar producto
+    // --------------------
+    function agregarProducto() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const precio = document.getElementById("precio").value.trim();
+      const descripcion = document.getElementById("descripcion").value.trim();
+      const foto = document.getElementById("foto").value.trim();
+      if(!nombre || !precio || !descripcion || !foto) {
+        alert("Completa todos los campos");
+        return;
+      }
+      db.collection("productos").add({
+        name: nombre,
+        price: precio,
+        description: descripcion,
+        photo: foto
+      })
+      .then(() => {
+        alert("Producto agregado correctamente");
+        document.getElementById("nombre").value = "";
+        document.getElementById("precio").value = "";
+        document.getElementById("descripcion").value = "";
+        document.getElementById("foto").value = "";
+      })
+      .catch(err => console.error("Error:", err));
+    }
+
+    // --------------------
+    // Eliminar producto
+    // --------------------
+    function eliminarProducto(id) {
+      db.collection("productos").doc(id).delete()
+        .then(() => console.log("Producto eliminado"))
+        .catch(err => console.error("Error:", err));
+    }
+
+    // --------------------
+    // Filtrar productos
+    // --------------------
+    function filtrarProductos() {
+      const valor = document.getElementById("search").value;
+      const isAdmin = !document.getElementById("adminPanel").classList.contains("hidden");
+      mostrarProductos(isAdmin, valor);
+    }
+
+    // --------------------
+    // Inicializar catálogo
+    // --------------------
+    mostrarProductos(false);
+  </script>
+
 </body>
 </html>
