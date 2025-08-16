@@ -1,8 +1,8 @@
-// Usuario y contraseÒa admin
+// Usuario y contrase√±a admin
 const USER = "Belen192226";
 const PASS = "Fran192226";
 
-// Array de productos (se cargar· desde Firestore)
+// Array de productos (se cargar√° desde Firestore)
 let productos = [];
 
 // Login admin
@@ -15,7 +15,7 @@ function login() {
     document.getElementById("adminPanel").classList.remove("hidden");
     cargarProductos(); // Cargar productos al entrar
   } else {
-    alert("Usuario o contraseÒa incorrectos");
+    alert("Usuario o contrase√±a incorrectos");
   }
 }
 
