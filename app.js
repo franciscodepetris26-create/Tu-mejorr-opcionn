@@ -95,23 +95,6 @@ function agregarProducto() {
   });
 }
 
-// --------------------
-// Agregar producto (solo admin)
-// --------------------
-// --------------------
-// Agregar producto (solo admin)
-// --------------------
-function agregarProducto() {
-  const nombre = document.getElementById("nombre").value.trim();
-  const precio = document.getElementById("precio").value.trim();
-  const descripcion = document.getElementById("descripcion").value.trim();
-  const foto = document.getElementById("foto").value.trim();
-
-  if (!nombre || !precio || !descripcion || !foto) {
-    alert("Completa todos los campos");
-    return;
-  }
-
   // Guardar en Firestore
   const db = firebase.firestore();
   db.collection("productos").add({
@@ -158,6 +141,7 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
 
 
 
