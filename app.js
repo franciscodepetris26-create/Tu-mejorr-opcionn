@@ -1,93 +1,92 @@
-// Usuario y contraseña admin
-const USER = "Belen192226";
-const PASS = "Fran192226";
+// ===== Firebase =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Array de productos (se cargará desde Firestore)
-let productos = [];
+const firebaseConfig = {
+  apiKey: "AIzaSyDsRX8iONMb11kwVww6cMYRctEbjB0EC9w",
+  authDomain: "catalogo-pwa-ca5bc.firebaseapp.com",
+  projectId: "catalogo-pwa-ca5bc",
+  storageBucket: "catalogo-pwa-ca5bc.firebasestorage.app",
+  messagingSenderId: "1076707936903",
+  appId: "1:1076707936903:web:3043cf0acff9b494b64622",
+  measurementId: "G-MZXZS2G1V1"
+};
 
-// Login admin
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ===== Login =====
 function login() {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
 
-  if(user === USER && pass === PASS) {
-    document.getElementById("login").classList.add("hidden");
+  if (user === "Belen192226" && pass === "Fran192226") {
+    document.getElementById("login").style.display = "none";
     document.getElementById("adminPanel").classList.remove("hidden");
-    cargarProductos(); // Cargar productos al entrar
   } else {
     alert("Usuario o contraseña incorrectos");
   }
 }
 
-// Cargar productos desde Firebase Firestore
-async function cargarProductos(filtro = "") {
-  productos = [];
-  const querySnapshot = await db.collection("productos").get();
-  querySnapshot.forEach(doc => {
-    productos.push({ id: doc.id, ...doc.data() });
+// Hacemos login visible desde HTML
+window.login = login;
+
+// ===== Productos =====
+async function cargarProductos() {
+  const productosDiv = document.getElementById("productos");
+  productosDiv.innerHTML = "";
+
+  const querySnapshot = await getDocs(collection(db, "productos"));
+  querySnapshot.forEach((doc) => {
+    const p = doc.data();
+    const div = document.createElement("div");
+    div.classList.add("producto");
+    div.innerHTML = `
+      <h3>${p.nombre}</h3>
+      <p>Precio: $${p.precio}</p>
+      <p>${p.descripcion}</p>
+      <img src="${p.foto}" width="120">
+    `;
+    productosDiv.appendChild(div);
   });
-  mostrarProductos(filtro);
 }
 
-// Mostrar productos en el HTML
-function mostrarProductos(filtro = "") {
-  const contenedor = document.getElementById("productos");
-  contenedor.innerHTML = "";
-
-  productos
-    .filter(p => p.nombre.toLowerCase().includes(filtro.toLowerCase()))
-    .forEach(p => {
-      contenedor.innerHTML += `
-        <div class="card">
-          <img src="${p.foto}" alt="${p.nombre}">
-          <h3>${p.nombre}</h3>
-          <p>${p.descripcion}</p>
-          <p><b>$${p.precio}</b></p>
-          <button onclick="eliminarProducto('${p.id}')">Eliminar</button>
-        </div>
-      `;
-    });
-}
-
-// Agregar producto a Firestore
+// Agregar producto
 async function agregarProducto() {
   const nombre = document.getElementById("nombre").value;
   const precio = document.getElementById("precio").value;
   const descripcion = document.getElementById("descripcion").value;
   const foto = document.getElementById("foto").value;
 
-  if(!nombre || !precio || !descripcion || !foto) {
-    alert("Completa todos los campos");
-    return;
+  try {
+    await addDoc(collection(db, "productos"), {
+      nombre,
+      precio,
+      descripcion,
+      foto
+    });
+    alert("Producto agregado!");
+    cargarProductos();
+  } catch (e) {
+    console.error("Error agregando producto: ", e);
   }
-
-  await db.collection("productos").add({ nombre, precio, descripcion, foto });
-
-  // Limpiar inputs
-  document.getElementById("nombre").value = "";
-  document.getElementById("precio").value = "";
-  document.getElementById("descripcion").value = "";
-  document.getElementById("foto").value = "";
-
-  cargarProductos();
 }
 
-// Eliminar producto de Firestore
-async function eliminarProducto(id) {
-  await db.collection("productos").doc(id).delete();
-  cargarProductos();
-}
+window.agregarProducto = agregarProducto;
 
-// Filtrar productos en tiempo real
+// Filtro
 function filtrarProductos() {
-  const valor = document.getElementById("search").value;
-  mostrarProductos(valor);
+  const texto = document.getElementById("search").value.toLowerCase();
+  const productos = document.querySelectorAll(".producto");
+
+  productos.forEach(p => {
+    const visible = p.innerText.toLowerCase().includes(texto);
+    p.style.display = visible ? "block" : "none";
+  });
 }
 
-// Registrar Service Worker para PWA (offline)
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
+window.filtrarProductos = filtrarProductos;
 
-// Cargar productos para visitantes que no son admin
+// Cargar productos al inicio
 cargarProductos();
