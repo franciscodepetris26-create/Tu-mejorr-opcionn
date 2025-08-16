@@ -28,7 +28,7 @@ function login() {
   if(user === USER && pass === PASS) {
     document.getElementById("login").classList.add("hidden");
     document.getElementById("adminPanel").classList.remove("hidden");
-    mostrarProductos(true); // Mostrar productos con botones de eliminar
+    mostrarProductos(true);
   } else {
     alert("Usuario o contraseña incorrectos");
   }
@@ -40,18 +40,17 @@ function login() {
 function mostrarProductos(isAdmin = false, filtro = "") {
   const contenedor = document.getElementById("productos");
 
-  // Escuchar cambios en tiempo real
   db.collection("productos").onSnapshot((querySnapshot) => {
     contenedor.innerHTML = ""; // Limpiar productos
     querySnapshot.forEach((doc) => {
       const p = doc.data();
-      if (p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
+      if (p.name.toLowerCase().includes(filtro.toLowerCase())) {
         contenedor.innerHTML += `
           <div class="card">
-            <img src="${p.foto}" alt="${p.nombre}">
-            <h3>${p.nombre}</h3>
-            <p>${p.descripcion}</p>
-            <p><b>$${p.precio}</b></p>
+            <img src="${p.photo}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>${p.description}</p>
+            <p><b>$${p.price}</b></p>
             ${isAdmin ? `<button onclick="eliminarProducto('${doc.id}')">Eliminar</button>` : ""}
           </div>
         `;
@@ -75,10 +74,10 @@ function agregarProducto() {
   }
 
   db.collection("productos").add({
-    nombre,
-    precio,
-    descripcion,
-    foto
+    name: nombre,
+    price: precio,
+    description: descripcion,
+    photo: foto
   })
   .then(() => {
     alert("Producto agregado correctamente");
@@ -87,7 +86,7 @@ function agregarProducto() {
     document.getElementById("precio").value = "";
     document.getElementById("descripcion").value = "";
     document.getElementById("foto").value = "";
-    // No hace falta llamar a mostrarProductos(), onSnapshot ya actualiza
+    // onSnapshot actualiza automáticamente
   })
   .catch((error) => {
     console.error("Error al agregar producto: ", error);
@@ -99,9 +98,7 @@ function agregarProducto() {
 // Eliminar producto (solo admin)
 // --------------------
 function eliminarProducto(id) {
-  db.collection("productos").doc(id).delete().then(() => {
-    mostrarProductos(true);
-  });
+  db.collection("productos").doc(id).delete();
 }
 
 // --------------------
@@ -117,11 +114,3 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
-
-
-
-
-
-
-
-
