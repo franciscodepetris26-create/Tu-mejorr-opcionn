@@ -1,13 +1,11 @@
-// --------------------
 // Configuración de Firebase
-// --------------------
 const firebaseConfig = {
-  apiKey: "AIzaSyDsRX8iONMb11kwVww6cMYRctEbjB0EC9w",
-  authDomain: "catalogo-pwa-ca5bc.firebaseapp.com",
-  projectId: "catalogo-pwa-ca5bc",
-  storageBucket: "catalogo-pwa-ca5bc.appspot.com",
-  messagingSenderId: "1076707936903",
-  appId: "1:1076707936903:web:4a06dad55ccf1498b64622"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROJECT.firebaseapp.com",
+  projectId: "TU_PROJECT",
+  storageBucket: "TU_PROJECT.appspot.com",
+  messagingSenderId: "TU_SENDER_ID",
+  appId: "TU_APP_ID"
 };
 
 // Inicializar Firebase
@@ -160,6 +158,7 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
 
 
 
