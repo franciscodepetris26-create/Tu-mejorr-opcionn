@@ -1,30 +1,30 @@
+// Importar funciones de Firebase
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+
 // Configuración de Firebase
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROJECT.firebaseapp.com",
-  projectId: "TU_PROJECT",
-  storageBucket: "TU_PROJECT.appspot.com",
-  messagingSenderId: "TU_SENDER_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyB8CdmsQ4GUqN1m_KlHlxGhagmed8_aVpA",
+  authDomain: "producto-a6e68.firebaseapp.com",
+  projectId: "producto-a6e68",
+  storageBucket: "producto-a6e68.firebasestorage.app",
+  messagingSenderId: "358261871993",
+  appId: "1:358261871993:web:6aff27584ed1afd7d04ba8",
+  measurementId: "G-6RFWTEJZ7N"
 };
 
 // Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// --------------------
-// Usuario admin
-// --------------------
+// Admin
 const USER = "Belen192226";
 const PASS = "Fran192226";
 
-// --------------------
-// Función login
-// --------------------
+// Login
 function login() {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
-
   if(user === USER && pass === PASS) {
     document.getElementById("login").classList.add("hidden");
     document.getElementById("adminPanel").classList.remove("hidden");
@@ -34,24 +34,23 @@ function login() {
   }
 }
 
-// --------------------
 // Mostrar productos
-// --------------------
 function mostrarProductos(isAdmin = false, filtro = "") {
   const contenedor = document.getElementById("productos");
+  const colRef = collection(db, "productos");
 
-  db.collection("productos").onSnapshot((querySnapshot) => {
-    contenedor.innerHTML = ""; // Limpiar productos
-    querySnapshot.forEach((doc) => {
-      const p = doc.data();
-      if (p.name.toLowerCase().includes(filtro.toLowerCase())) {
+  onSnapshot(colRef, (snapshot) => {
+    contenedor.innerHTML = "";
+    snapshot.forEach((docItem) => {
+      const p = docItem.data();
+      if(p.name.toLowerCase().includes(filtro.toLowerCase())) {
         contenedor.innerHTML += `
           <div class="card">
             <img src="${p.photo}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p>${p.description}</p>
             <p><b>$${p.price}</b></p>
-            ${isAdmin ? `<button onclick="eliminarProducto('${doc.id}')">Eliminar</button>` : ""}
+            ${isAdmin ? `<button onclick="eliminarProducto('${docItem.id}')">Eliminar</button>` : ""}
           </div>
         `;
       }
@@ -59,58 +58,47 @@ function mostrarProductos(isAdmin = false, filtro = "") {
   });
 }
 
-// --------------------
-// Agregar producto (solo admin)
-// --------------------
-function agregarProducto() {
+// Agregar producto
+async function agregarProducto() {
   const nombre = document.getElementById("nombre").value.trim();
   const precio = document.getElementById("precio").value.trim();
   const descripcion = document.getElementById("descripcion").value.trim();
   const foto = document.getElementById("foto").value.trim();
 
-  if (!nombre || !precio || !descripcion || !foto) {
+  if(!nombre || !precio || !descripcion || !foto) {
     alert("Completa todos los campos");
     return;
   }
 
-  db.collection("productos").add({
-    name: nombre,
-    price: precio,
-    description: descripcion,
-    photo: foto
-  })
-  .then(() => {
+  try {
+    await addDoc(collection(db, "productos"), {
+      name: nombre,
+      price: precio,
+      description: descripcion,
+      photo: foto
+    });
     alert("Producto agregado correctamente");
-    // Limpiar campos
     document.getElementById("nombre").value = "";
     document.getElementById("precio").value = "";
     document.getElementById("descripcion").value = "";
     document.getElementById("foto").value = "";
-    // onSnapshot actualiza automáticamente
-  })
-  .catch((error) => {
-    console.error("Error al agregar producto: ", error);
-    alert("Error al agregar el producto");
-  });
+  } catch(e) {
+    console.error(e);
+    alert("Error al agregar producto");
+  }
 }
 
-// --------------------
-// Eliminar producto (solo admin)
-// --------------------
-function eliminarProducto(id) {
-  db.collection("productos").doc(id).delete();
+// Eliminar producto
+async function eliminarProducto(id) {
+  await deleteDoc(doc(db, "productos", id));
 }
 
-// --------------------
 // Filtrar productos
-// --------------------
 function filtrarProductos() {
   const valor = document.getElementById("search").value;
   const isAdmin = !document.getElementById("adminPanel").classList.contains("hidden");
   mostrarProductos(isAdmin, valor);
 }
 
-// --------------------
-// Mostrar productos al cargar (visitantes)
-// --------------------
+// Mostrar al cargar
 mostrarProductos(false);
