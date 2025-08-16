@@ -39,13 +39,13 @@ function login() {
 // --------------------
 function mostrarProductos(isAdmin = false, filtro = "") {
   const contenedor = document.getElementById("productos");
-  contenedor.innerHTML = "";
 
+  // Escuchar cambios en tiempo real
   db.collection("productos").onSnapshot((querySnapshot) => {
-    contenedor.innerHTML = "";
+    contenedor.innerHTML = ""; // Limpiar productos
     querySnapshot.forEach((doc) => {
       const p = doc.data();
-      if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
+      if (p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
         contenedor.innerHTML += `
           <div class="card">
             <img src="${p.foto}" alt="${p.nombre}">
@@ -117,6 +117,7 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
 
 
 
