@@ -6,20 +6,23 @@
   <title>Catálogo de Productos</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-
   <!-- Login admin -->
   <div id="login">
     <h2>Login Admin</h2>
     <input type="text" id="username" placeholder="Usuario">
     <input type="password" id="password" placeholder="Contraseña">
-    <button id="loginButton">Entrar</button>
+    <button onclick="login()">Entrar</button>
   </div>
 
   <!-- Todos pueden ver esto -->
   <h1>Catálogo de Productos</h1>
-  <input type="text" id="search" placeholder="Buscar producto...">
+  <input type="text" id="search" placeholder="Buscar producto..." oninput="filtrarProductos()">
+
   <div id="productos"></div>
 
   <!-- Solo admins -->
@@ -29,12 +32,9 @@
     <input type="text" id="precio" placeholder="Precio">
     <input type="text" id="descripcion" placeholder="Descripción">
     <input type="text" id="foto" placeholder="URL de Imagen">
-    <button id="addButton">Agregar Producto</button>
+    <button onclick="agregarProducto()">Agregar</button>
   </div>
 
-  <!-- Firebase clásicos -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
