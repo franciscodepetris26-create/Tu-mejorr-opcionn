@@ -35,6 +35,32 @@ function login() {
 }
 
 // --------------------
+// Mostrar productos
+// --------------------
+function mostrarProductos(isAdmin = false, filtro = "") {
+  const contenedor = document.getElementById("productos");
+  contenedor.innerHTML = "";
+
+  db.collection("productos").onSnapshot((querySnapshot) => {
+    contenedor.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+      const p = doc.data();
+      if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
+        contenedor.innerHTML += `
+          <div class="card">
+            <img src="${p.foto}" alt="${p.nombre}">
+            <h3>${p.nombre}</h3>
+            <p>${p.descripcion}</p>
+            <p><b>$${p.precio}</b></p>
+            ${isAdmin ? `<button onclick="eliminarProducto('${doc.id}')">Eliminar</button>` : ""}
+          </div>
+        `;
+      }
+    });
+  });
+}
+
+// --------------------
 // Agregar producto (solo admin)
 // --------------------
 function agregarProducto() {
@@ -91,6 +117,7 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
 
 
 
