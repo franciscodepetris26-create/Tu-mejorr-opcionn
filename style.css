@@ -1,4 +1,3 @@
-/* ===== Estilos Generales ===== */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -7,7 +6,6 @@ body {
   margin: 0;
 }
 
-/* ===== Login ===== */
 #login {
   background: white;
   padding: 20px;
@@ -35,14 +33,9 @@ body {
   cursor: pointer;
 }
 
-#login button:hover {
-  background: #45a049;
-}
+#login button:hover { background: #45a049; }
 
-/* ===== Catálogo ===== */
-h1 {
-  color: #333;
-}
+h1 { color: #333; }
 
 #search {
   width: 90%;
@@ -54,7 +47,6 @@ h1 {
   display: block;
 }
 
-/* ===== Productos ===== */
 #productos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -70,26 +62,10 @@ h1 {
   transition: transform 0.2s;
 }
 
-.producto:hover {
-  transform: translateY(-3px);
-}
-
-.producto img {
-  max-width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.producto h3 {
-  margin: 10px 0 5px 0;
-  color: #4CAF50;
-}
-
-.producto p {
-  margin: 5px 0;
-  color: #555;
-}
-
+.producto:hover { transform: translateY(-3px); }
+.producto img { max-width: 100%; border-radius: 8px; margin-bottom: 10px; }
+.producto h3 { margin: 10px 0 5px 0; color: #4CAF50; }
+.producto p { margin: 5px 0; color: #555; }
 .producto button {
   margin-top: 5px;
   padding: 8px 12px;
@@ -99,12 +75,8 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
 }
+.producto button:hover { background: #d32f2f; }
 
-.producto button:hover {
-  background: #d32f2f;
-}
-
-/* ===== Admin Panel ===== */
 #adminPanel {
   background: white;
   padding: 20px;
@@ -132,18 +104,10 @@ h1 {
   cursor: pointer;
 }
 
-#adminPanel button:hover {
-  background: #45a049;
-}
+#adminPanel button:hover { background: #45a049; }
 
-/* ===== Hidden ===== */
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
-/* ===== Responsive ===== */
 @media (max-width: 500px) {
-  #productos {
-    grid-template-columns: 1fr;
-  }
+  #productos { grid-template-columns: 1fr; }
 }
