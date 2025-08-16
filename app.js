@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/fireba
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } 
   from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// Tu configuración de Firebase
+// Configuración Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDsRX8iONMb11kwVww6cMYRctEbjB0EC9w",
   authDomain: "catalogo-pwa-ca5bc.firebaseapp.com",
@@ -18,10 +18,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ===== Login =====
+// ===== Variables =====
 let esAdmin = false;
 
-function login() {
+// ===== Login =====
+const loginButton = document.getElementById("loginButton");
+loginButton.addEventListener("click", () => {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
 
@@ -33,10 +35,9 @@ function login() {
   } else {
     alert("Usuario o contraseña incorrectos");
   }
-}
-window.login = login;
+});
 
-// ===== Productos =====
+// ===== Cargar Productos =====
 async function cargarProductos() {
   const productosDiv = document.getElementById("productos");
   productosDiv.innerHTML = "";
@@ -51,14 +52,22 @@ async function cargarProductos() {
       <p><b>Precio:</b> $${p.precio}</p>
       <p>${p.descripcion}</p>
       <img src="${p.foto}" width="120">
-      ${esAdmin ? `<button onclick="eliminarProducto('${docItem.id}')">Eliminar</button>` : ""}
+      ${esAdmin ? `<button class="deleteBtn" data-id="${docItem.id}">Eliminar</button>` : ""}
     `;
     productosDiv.appendChild(div);
   });
+
+  // Agregar eventos a botones eliminar
+  if (esAdmin) {
+    document.querySelectorAll(".deleteBtn").forEach(btn => {
+      btn.addEventListener("click", () => eliminarProducto(btn.dataset.id));
+    });
+  }
 }
 
-// Agregar producto
-async function agregarProducto() {
+// ===== Agregar Producto =====
+const addButton = document.getElementById("addButton");
+addButton.addEventListener("click", async () => {
   const nombre = document.getElementById("nombre").value;
   const precio = document.getElementById("precio").value;
   const descripcion = document.getElementById("descripcion").value;
@@ -73,7 +82,6 @@ async function agregarProducto() {
     await addDoc(collection(db, "productos"), { nombre, precio, descripcion, foto });
     alert("Producto agregado ✅");
 
-    // limpiar inputs
     document.getElementById("nombre").value = "";
     document.getElementById("precio").value = "";
     document.getElementById("descripcion").value = "";
@@ -84,10 +92,9 @@ async function agregarProducto() {
     console.error("Error agregando producto:", e);
     alert("Error al guardar el producto ❌");
   }
-}
-window.agregarProducto = agregarProducto;
+});
 
-// Eliminar producto
+// ===== Eliminar Producto =====
 async function eliminarProducto(id) {
   if (confirm("¿Seguro que quieres eliminar este producto?")) {
     try {
@@ -100,19 +107,16 @@ async function eliminarProducto(id) {
     }
   }
 }
-window.eliminarProducto = eliminarProducto;
 
-// Filtro de productos
-function filtrarProductos() {
-  const texto = document.getElementById("search").value.toLowerCase();
-  const productos = document.querySelectorAll(".producto");
-
-  productos.forEach(p => {
+// ===== Filtro de Productos =====
+const searchInput = document.getElementById("search");
+searchInput.addEventListener("input", () => {
+  const texto = searchInput.value.toLowerCase();
+  document.querySelectorAll(".producto").forEach(p => {
     const visible = p.innerText.toLowerCase().includes(texto);
     p.style.display = visible ? "block" : "none";
   });
-}
-window.filtrarProductos = filtrarProductos;
+});
 
-// Cargar productos al iniciar
+// ===== Cargar productos al inicio =====
 cargarProductos();
