@@ -5,9 +5,7 @@ body {
   background: #f4f4f4;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 #productos {
   display: grid;
@@ -16,14 +14,14 @@ body {
   margin-top: 20px;
 }
 
-.producto, .card {
+.producto {
   background: white;
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.producto img, .card img {
+.producto img {
   max-width: 100%;
   border-radius: 8px;
 }
