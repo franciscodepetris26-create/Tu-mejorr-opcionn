@@ -39,17 +39,16 @@ function login() {
 // --------------------
 // Mostrar productos
 // --------------------
-// --------------------
-// Mostrar productos (tiempo real)
-// --------------------
 function mostrarProductos(isAdmin = false, filtro = "") {
   const contenedor = document.getElementById("productos");
+  contenedor.innerHTML = "";
 
-  db.collection("productos").onSnapshot((snapshot) => {
-    contenedor.innerHTML = ""; // limpiar contenedor
-    snapshot.forEach((doc) => {
+  // Escuchar cambios en tiempo real
+  db.collection("productos").onSnapshot((querySnapshot) => {
+    contenedor.innerHTML = "";
+    querySnapshot.forEach((doc) => {
       const p = doc.data();
-      if (p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
+      if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
         contenedor.innerHTML += `
           <div class="card">
             <img src="${p.foto}" alt="${p.nombre}">
@@ -61,6 +60,40 @@ function mostrarProductos(isAdmin = false, filtro = "") {
         `;
       }
     });
+  });
+}
+
+// --------------------
+// Agregar producto (solo admin)
+// --------------------
+function agregarProducto() {
+  const nombre = document.getElementById("nombre").value.trim();
+  const precio = document.getElementById("precio").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  const foto = document.getElementById("foto").value.trim();
+
+  if (!nombre || !precio || !descripcion || !foto) {
+    alert("Completa todos los campos");
+    return;
+  }
+
+  db.collection("productos").add({
+    nombre,
+    precio,
+    descripcion,
+    foto
+  })
+  .then(() => {
+    alert("Producto agregado correctamente");
+    document.getElementById("nombre").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("descripcion").value = "";
+    document.getElementById("foto").value = "";
+    // No hace falta llamar a mostrarProductos(), onSnapshot ya actualiza
+  })
+  .catch((error) => {
+    console.error("Error al agregar producto: ", error);
+    alert("Error al agregar el producto");
   });
 }
 
@@ -127,5 +160,6 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
 
 
