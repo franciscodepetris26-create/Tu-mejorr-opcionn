@@ -1,4 +1,4 @@
-// Inicializar Firebase
+// Inicializar Firebase (sin import)
 firebase.initializeApp({
   apiKey: "AIzaSyDsRX8iONMb11kwVww6cMYRctEbjB0EC9w",
   authDomain: "catalogo-pwa-ca5bc.firebaseapp.com",
