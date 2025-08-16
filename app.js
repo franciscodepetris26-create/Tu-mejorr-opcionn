@@ -35,33 +35,6 @@ function login() {
 }
 
 // --------------------
-// Mostrar productos
-// --------------------
-function mostrarProductos(isAdmin = false, filtro = "") {
-  const contenedor = document.getElementById("productos");
-  contenedor.innerHTML = "";
-
-  // Escuchar cambios en tiempo real
-  db.collection("productos").onSnapshot((querySnapshot) => {
-    contenedor.innerHTML = "";
-    querySnapshot.forEach((doc) => {
-      const p = doc.data();
-      if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
-        contenedor.innerHTML += `
-          <div class="card">
-            <img src="${p.foto}" alt="${p.nombre}">
-            <h3>${p.nombre}</h3>
-            <p>${p.descripcion}</p>
-            <p><b>$${p.precio}</b></p>
-            ${isAdmin ? `<button onclick="eliminarProducto('${doc.id}')">Eliminar</button>` : ""}
-          </div>
-        `;
-      }
-    });
-  });
-}
-
-// --------------------
 // Agregar producto (solo admin)
 // --------------------
 function agregarProducto() {
@@ -83,35 +56,12 @@ function agregarProducto() {
   })
   .then(() => {
     alert("Producto agregado correctamente");
-    document.getElementById("nombre").value = "";
-    document.getElementById("precio").value = "";
-    document.getElementById("descripcion").value = "";
-    document.getElementById("foto").value = "";
-    // No hace falta llamar a mostrarProductos(), onSnapshot ya actualiza
-  })
-  .catch((error) => {
-    console.error("Error al agregar producto: ", error);
-    alert("Error al agregar el producto");
-  });
-}
-
-  // Guardar en Firestore
-  const db = firebase.firestore();
-  db.collection("productos").add({
-    nombre: nombre,
-    precio: precio,
-    descripcion: descripcion,
-    foto: foto
-  })
-  .then(() => {
-    alert("Producto agregado correctamente");
     // Limpiar campos
     document.getElementById("nombre").value = "";
     document.getElementById("precio").value = "";
     document.getElementById("descripcion").value = "";
     document.getElementById("foto").value = "";
-    // Mostrar productos actualizados
-    mostrarProductos();
+    // No hace falta llamar a mostrarProductos(), onSnapshot ya actualiza
   })
   .catch((error) => {
     console.error("Error al agregar producto: ", error);
@@ -141,6 +91,7 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
 
 
 
