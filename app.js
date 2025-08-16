@@ -1,5 +1,5 @@
 // Inicializar Firebase
-firebase.initializeApp({
+const firebaseConfig = {
   apiKey: "TU_API_KEY",
   authDomain: "TU_PROJECT.firebaseapp.com",
   projectId: "TU_PROJECT",
@@ -7,12 +7,13 @@ firebase.initializeApp({
   messagingSenderId: "TU_SENDER_ID",
   appId: "TU_APP_ID",
   measurementId: "TU_MEASUREMENT_ID"
-});
-
+};
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
 let esAdmin = false;
 
-// Login admin
+// LOGIN ADMIN
 document.getElementById("loginButton").addEventListener("click", () => {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
@@ -22,7 +23,9 @@ document.getElementById("loginButton").addEventListener("click", () => {
     document.getElementById("login").style.display = "none";
     document.getElementById("adminPanel").classList.remove("hidden");
     cargarProductos();
-  } else alert("Usuario o contraseña incorrectos");
+  } else {
+    alert("Usuario o contraseña incorrectos");
+  }
 });
 
 // Cargar productos desde Firebase
@@ -75,7 +78,7 @@ document.getElementById("addButton").addEventListener("click", () => {
       cargarProductos();
     }).catch(err => {
       console.error(err);
-      alert("No se pudo agregar el producto ❌");
+      alert("Error al agregar producto ❌");
     });
 });
 
