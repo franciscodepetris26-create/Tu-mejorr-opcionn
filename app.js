@@ -1,12 +1,12 @@
-// Inicializar Firebase (sin import)
+// Inicializar Firebase
 firebase.initializeApp({
-  apiKey: "AIzaSyDsRX8iONMb11kwVww6cMYRctEbjB0EC9w",
-  authDomain: "catalogo-pwa-ca5bc.firebaseapp.com",
-  projectId: "catalogo-pwa-ca5bc",
-  storageBucket: "catalogo-pwa-ca5bc.firebasestorage.app",
-  messagingSenderId: "1076707936903",
-  appId: "1:1076707936903:web:4a06dad55ccf1498b64622",
-  measurementId: "G-FZE5JC9LBF"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROJECT.firebaseapp.com",
+  projectId: "TU_PROJECT",
+  storageBucket: "TU_PROJECT.appspot.com",
+  messagingSenderId: "TU_SENDER_ID",
+  appId: "TU_APP_ID",
+  measurementId: "TU_MEASUREMENT_ID"
 });
 
 const db = firebase.firestore();
@@ -25,7 +25,7 @@ document.getElementById("loginButton").addEventListener("click", () => {
   } else alert("Usuario o contraseña incorrectos");
 });
 
-// Cargar productos
+// Cargar productos desde Firebase
 function cargarProductos(){
   const productosDiv = document.getElementById("productos");
   productosDiv.innerHTML = "";
