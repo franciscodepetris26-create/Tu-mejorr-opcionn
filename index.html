@@ -12,13 +12,12 @@
     <h2>Login Admin</h2>
     <input type="text" id="username" placeholder="Usuario">
     <input type="password" id="password" placeholder="Contraseña">
-    <button onclick="login()">Entrar</button>
+    <button id="loginButton">Entrar</button>
   </div>
 
   <!-- Todos pueden ver esto -->
   <h1>Catálogo de Productos</h1>
-  <input type="text" id="search" placeholder="Buscar producto..." oninput="filtrarProductos()">
-
+  <input type="text" id="search" placeholder="Buscar producto...">
   <div id="productos"></div>
 
   <!-- Solo admins -->
@@ -28,7 +27,7 @@
     <input type="text" id="precio" placeholder="Precio">
     <input type="text" id="descripcion" placeholder="Descripción">
     <input type="text" id="foto" placeholder="URL de Imagen">
-    <button onclick="agregarProducto()">Agregar</button>
+    <button id="addButton">Agregar</button>
   </div>
 
   <!-- Firebase y lógica -->
