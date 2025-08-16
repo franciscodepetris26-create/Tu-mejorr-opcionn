@@ -57,7 +57,6 @@ async function cargarProductos() {
     productosDiv.appendChild(div);
   });
 
-  // Agregar eventos a botones eliminar
   if (esAdmin) {
     document.querySelectorAll(".deleteBtn").forEach(btn => {
       btn.addEventListener("click", () => eliminarProducto(btn.dataset.id));
