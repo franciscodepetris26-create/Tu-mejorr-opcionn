@@ -64,28 +64,41 @@ function mostrarProductos(isAdmin = false, filtro = "") {
 // --------------------
 // Agregar producto (solo admin)
 // --------------------
+// --------------------
+// Agregar producto (solo admin)
+// --------------------
 function agregarProducto() {
-  const nombre = document.getElementById("nombre").value;
-  const precio = document.getElementById("precio").value;
-  const descripcion = document.getElementById("descripcion").value;
-  const foto = document.getElementById("foto").value;
+  const nombre = document.getElementById("nombre").value.trim();
+  const precio = document.getElementById("precio").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  const foto = document.getElementById("foto").value.trim();
 
-  if(!nombre || !precio || !descripcion || !foto) {
+  if (!nombre || !precio || !descripcion || !foto) {
     alert("Completa todos los campos");
     return;
   }
 
+  // Guardar en Firestore
+  const db = firebase.firestore();
   db.collection("productos").add({
-    nombre,
-    precio,
-    descripcion,
-    foto
-  }).then(() => {
+    nombre: nombre,
+    precio: precio,
+    descripcion: descripcion,
+    foto: foto
+  })
+  .then(() => {
+    alert("Producto agregado correctamente");
+    // Limpiar campos
     document.getElementById("nombre").value = "";
     document.getElementById("precio").value = "";
     document.getElementById("descripcion").value = "";
     document.getElementById("foto").value = "";
-    mostrarProductos(true);
+    // Mostrar productos actualizados
+    mostrarProductos();
+  })
+  .catch((error) => {
+    console.error("Error al agregar producto: ", error);
+    alert("Error al agregar el producto");
   });
 }
 
@@ -111,3 +124,4 @@ function filtrarProductos() {
 // Mostrar productos al cargar (visitantes)
 // --------------------
 mostrarProductos(false);
+
